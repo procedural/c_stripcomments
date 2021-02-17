@@ -35,6 +35,10 @@ int main(int ArgsCount, const char ** Args) {
       break;
     }
 
+    if (c == '\r') {
+      continue;
+    }
+
     if (c == ' ' && isComment == 0) {
       killGnuPrint(" ");
       continue;

@@ -11,6 +11,11 @@ int main(int ArgsCount, const char ** Args) {
     goto exit;
   }
 
+  char mode = 0;
+  if (ArgsCount >= 3) {
+    mode = Args[2][0];
+  }
+
   int fd = killGnuOpen(Args[1], 02, 0400 | 0200);
   if (fd < 0) {
     killGnuPrint("c_stripcomments error: fd < 0\n");
@@ -20,6 +25,7 @@ int main(int ArgsCount, const char ** Args) {
   KillGnuFileStatus fileStatus = {};
   killGnuFstat(fd, &fileStatus);
 
+  char prevChar = 0;
   int isComment = 0;
   for (long i = 0; i < fileStatus.st_size; i += 1) {
     char c = 0;
@@ -31,6 +37,15 @@ int main(int ArgsCount, const char ** Args) {
 
     if (c == ' ' && isComment == 0) {
       killGnuPrint(" ");
+      continue;
+    }
+
+    if (c == '\t' && isComment == 0) {
+      if (mode == '1') {
+        killGnuPrint("  ");
+      } else {
+        killGnuPrint("\t");
+      }
       continue;
     }
 
@@ -50,7 +65,16 @@ int main(int ArgsCount, const char ** Args) {
       char s[2];
       s[0] = c;
       s[1] = 0;
-      killGnuPrint(s);
+      if (mode == '1') {
+        if (prevChar == '\n' && c == '\n') {
+        } else if (prevChar == '(' && c == '\n') {
+        } else {
+          killGnuPrint(s);
+        }
+      } else {
+        killGnuPrint(s);
+      }
+      prevChar = c;
     }
   }
 

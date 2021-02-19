@@ -72,6 +72,7 @@ int main(int ArgsCount, const char ** Args) {
       if (mode == '1') {
         if (prevChar == '\n' && c == '\n') {
         } else if (prevChar == '(' && c == '\n') {
+        } else if (prevChar == ',' && c == '\n') {
         } else {
           killGnuPrint(s);
         }
